@@ -138,3 +138,4 @@ public class Kuyruk {
 		}
 		return zaman;
 	}
+}
