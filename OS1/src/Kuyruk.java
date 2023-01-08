@@ -138,4 +138,132 @@ public class Kuyruk {
 		}
 		return zaman;
 	}
+// 1.ve 2.oncelige sahip proseslerin durumunu kontrol etmek icin yazidli
+	int kontrolet2(List<Proses> kullanicis, int zaman) throws InterruptedException {
+
+		System.out.println(kullanicis.get(0).renk + zaman + ".0000 sn proses basladi.    " + "    id:"
+				+ kullanicis.get(0).pid.pid() + "   oncelik: " + kullanicis.get(0).oncelik + "   kalan sure: "
+				+ (kullanicis.get(0).proseszamani) + " sn");
+
+		kullanicis.get(0).proseszamani -= 1;
+		Thread.sleep(1000);
+
+		if (kullanicis.get(0).basladimi != true)
+			kullanicis.get(0).baslatilmazamani = zaman;
+		zaman++;
+
+		if (kullanicis.size() != 0)
+			if (kullanicis.get(0).basladimi == true & zaman - kullanicis.get(0).baslatilmazamani > 20) {
+				System.out.println(kullanicis.get(0).renk + zaman + ".0000 sn zaman asimi.   " + "    id:"
+						+ kullanicis.get(0).pid.pid() + "   oncelik: " + kullanicis.get(0).oncelik + "   kalan sure: "
+						+ (kullanicis.get(0).proseszamani) + " sn");
+
+			} else {
+				if (kullanicis.get(0).proseszamani > 0)
+					System.out.println(kullanicis.get(0).renk + zaman + ".0000 sn proses askida.     " + "    id:"
+							+ kullanicis.get(0).pid.pid() + "   oncelik: " + kullanicis.get(0).oncelik
+							+ "   kalan sure: " + (kullanicis.get(0).proseszamani) + " sn");
+				else
+					System.out.println(kullanicis.get(0).renk + zaman + ".0000 sn proses sonlandi.   " + "    id:"
+							+ kullanicis.get(0).pid.pid() + "   oncelik: " + kullanicis.get(0).oncelik
+							+ "   kalan sure: " + (kullanicis.get(0).proseszamani) + " sn");
+
+				kullanicis.get(0).basladimi = true;
+				kullanicis.get(0).sayac++;
+
+				if (kullanicis.get(0).oncelik < 3 & kullanicis.get(0).proseszamani > 0)
+					kullanicis.get(0).oncelik++;
+
+			}
+		return zaman;
+
+	}
+
+	// 3.oncelige sahip proseslerin durumunu kontrol etmek icin yazildi.
+	int kontrolet3(List<Proses> kullanicis, int zaman) throws InterruptedException {
+
+		System.out.println(kullanicis.get(0).renk + zaman + ".0000 sn proses basladi.    " + "    id:"
+				+ kullanicis.get(0).pid.pid() + "   oncelik: " + kullanicis.get(0).oncelik + "   kalan sure: "
+				+ (kullanicis.get(0).proseszamani) + " sn");
+		// 1 sn bekler
+		Thread.sleep(1000);
+		kullanicis.get(0).proseszamani -= 1;
+
+		kullanicis.get(0).sayac++;
+
+		if (kullanicis.get(0).basladimi != true)
+			kullanicis.get(0).baslatilmazamani = zaman;
+
+		zaman++;
+
+		if (kullanicis.size() != 0)
+			if (kullanicis.get(0).basladimi == true & zaman - kullanicis.get(0).baslatilmazamani > 20) {
+				System.out.println(kullanicis.get(0).renk + zaman + ".0000 sn zaman asimi.      " + "     id:"
+						+ kullanicis.get(0).pid.pid() + "   oncelik: " + kullanicis.get(0).oncelik + "   kalan sure: "
+						+ (kullanicis.get(0).proseszamani) + " sn");
+				kullanicis.remove(0);
+			} else {
+
+				if (kullanicis.get(0).proseszamani > 0)
+					System.out.println(kullanicis.get(0).renk + zaman + ".0000 sn proses askida.     " + "    id:"
+							+ kullanicis.get(0).pid.pid() + "   oncelik: " + kullanicis.get(0).oncelik
+							+ "   kalan sure: " + (kullanicis.get(0).proseszamani) + " sn");
+				else
+					System.out.println(kullanicis.get(0).renk + zaman + ".0000 sn proses sonlandi.   " + "    id:"
+							+ kullanicis.get(0).pid.pid() + "   oncelik: " + kullanicis.get(0).oncelik
+							+ "   kalan sure: " + (kullanicis.get(0).proseszamani) + " sn");
+
+				kullanicis.get(0).basladimi = true;
+				Proses x = kullanicis.get(0);
+				kullanicis.remove(0);
+
+				if (x.proseszamani > 0)
+					kullanicis.add(x);
+
+			}
+		return zaman;
+	}
+
+	// 2.oncelik seviyesinden 1 sn calistiktan sonra 3.oncelik seviyesine gecmeyi
+	// saglayan fonksiyon yazidli
+	int oncelik2(List<Proses> kullanicis, int zaman, Kuyruk k, Kuyruk k2, Kuyruk kullanici, Kuyruk gercek,
+			List<Proses> gerceks) throws InterruptedException {
+		if (k.liste.size() != 0)
+			while (zaman >= k.liste.get(0).variszamani) {
+
+				while (k.liste.size() != 0) {
+
+					zaman = k.kontrolet2(k.liste, zaman);
+
+					if (k.liste.get(0).proseszamani > 0)
+						k2.enqueue(k.liste.get(0));
+					k.liste.remove(0);
+
+					while (gerceks.size() != 0) {
+						zaman = gercek.kontrolet(gerceks, zaman, k.liste, k2.liste);
+
+						if (gerceks.size() == 0)
+							break;
+
+					}
+
+				}
+
+				while (gerceks.size() != 0) {
+					zaman = gercek.kontrolet(gerceks, zaman, k.liste, k2.liste);
+
+					if (gerceks.size() == 0)
+						break;
+
+				}
+
+				if (k.liste.size() == 0)
+					break;
+
+			}
+
+		return zaman;
+
+	}
+
 }
