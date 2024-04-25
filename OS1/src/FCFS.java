@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.List;
 
 public class FCFS {
-	// FCFS algoritmas�n� uyguladigimiz class
 	public static void schedule(List<Proses> proses) throws InterruptedException {
 		// Sort the processes by their arrival time
 		Collections.sort(proses, new Comparator<Proses>() {
